@@ -20,6 +20,12 @@
                       </h4>
                       <h4><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h4>
                       <p>{{ task.content }}</p>
+                      <p>{{ task.createdAt|date('d-M-Y H:i') }}</p>
+                      {% if task.author.username is defined %}
+                          <span class="badge badge-secondary">{{ task.author.username }}</span>
+                      {% else %}
+                          <span class="badge badge-secondary">Anonyme</span>
+                      {% endif %}
                   </div>
                   <div>
                       <form action="{{ path('task_toggle', {'id' : task.id }) }}">

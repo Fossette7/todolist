@@ -4,10 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
@@ -19,7 +20,7 @@ class UserController extends AbstractController
     {
         return $this->render(
             'user/list.html.twig', [
-                'users' => $em->getRepository(User::class)->findAll();
+                'users' => $em->getRepository(User::class)->findAll()
             ]
         );
     }
