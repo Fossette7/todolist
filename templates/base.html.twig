@@ -43,7 +43,9 @@
                 {% endif %}
 
                 {% if app.user %}
-                <a href="{{ path('logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
+                    <a href="{{ path('logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
+                    <a href="{{ path('user_edit',{'id':app.user.id}) }}" class="pull-right btn btn-info">Profil</a>
+                    <p class="pull-right btn btn-outline-primary">Bonjour {{ app.user.username }}</p>
                 {% endif %}
 
                 {% if not app.user and 'login' != app.request.attributes.get('_route') %}
@@ -84,6 +86,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
+                    {# if route different of 'homepage', display 'homepage' #}
                     {% if app.request.attributes.get('_route') != 'homepage' %}
                         <a href="{{ path('homepage') }}" class=" pull-right btn btn-light"> Retour à l'accueil </a>
                     {% endif %}

@@ -102,6 +102,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
     }
 
+    /**
+     * The public representation of the user (e.g. a username, an email address, etc.)
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+      return (string) $this->email;
+    }
+
     public function getRoles(): array
     {
         $roles = $this->roles;
