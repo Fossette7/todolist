@@ -16,7 +16,17 @@ class TaskController extends AbstractController
      */
     public function listAction(EntityManagerInterface $em)
     {
-        return $this->render('task/list.html.twig', ['tasks' => $em->getRepository(Task::class)->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $em->getRepository(Task::class)->findBy(['isDone' => 0])]);
+    }
+
+    /**
+     * @Route("/tasks/done", name="task_list_done")
+     */
+    public function listTaskDone(EntityManagerInterface $em)
+    {
+      $taskDone = $em->getRepository(Task::class)->findBy(['isDone'=> 1]);
+
+      return $this->render('task/list.html.twig', ['tasks' => $taskDone]);
     }
 
     /**
