@@ -82,6 +82,19 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "init-bdd-test": [
+            "php bin/console doctrine:database:drop --env=test --force",
+            "php bin/console doctrine:database:create --env=test",
+            "php bin/console doctrine:schema:update --force --env=test",
+            "php bin/console doctrine:fixture:load --env=test --append"
+        ],
+        "run-test": [
+            "php bin/phpunit"
+        ],
+        "run-test-witch-clean-bdd": [
+            "@init-bdd-test",
+            "@run-test"
         ]
     },
     "conflict": {
@@ -94,6 +107,7 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
