@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -91,13 +93,24 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
+     * @param EntityManagerInterface $em
+     * @param Security $security
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteTaskAction(Task $task, EntityManagerInterface $em)
+    public function deleteTaskAction(Task $task, EntityManagerInterface $em, \Symfony\Component\Security\Core\Security $security) :RedirectResponse
     {
-        $em->remove($task);
-        $em->flush();
-
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+      if (
+            ($this->getUser() && $this->getUser() === $task->getAuthor()) ||
+            ($task->getAuthor() === null && $security->isGranted('ROLE_ADMIN'))
+          )
+        {
+          $em->remove($task);
+          $em->flush();
+          $this->addFlash('success', 'La tâche a bien été supprimée.');
+        } else
+        {
+          throw new \Exception('Vous n\'avez pas les droits pour executer cette action');
+        }
 
         return $this->redirectToRoute('task_list');
     }
