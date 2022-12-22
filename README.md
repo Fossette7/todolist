@@ -32,7 +32,7 @@ inside your directory:  `cd my-project`
 > DATABASE_URL: `DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5.7.34&charset=utf8"`
 #### step 4 **Create database** with: `php bin/console doctrine:database:create` 
 
-#### step 5 **Create table on database with: `php bin/console doctrine:schema:update -f`
+#### step 5 **Create table on database** with: `php bin/console doctrine:schema:update -f`
 
 #### step 6 **Run the migration**: `php bin/console doctrine:migrations:migrate`
 
@@ -40,9 +40,10 @@ inside your directory:  `cd my-project`
 <hr>
 
 ### TEST - PHP Unit Test
-**Load the test fixture** with :  `php bin/console doctrine:fixtures:load`
+**Load the test fixture** with :  `php bin/console doctrine:fixtures:load --env=test`
 
-**Run tests** with: `vendor/bin/phpunit`
+**Run tests** with: `vendor/bin/phpunit` or `composer run-test`
+
 <hr>
 
 
