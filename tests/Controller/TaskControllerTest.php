@@ -2,33 +2,38 @@
 
 namespace App\Tests\Controller;
 
-use App\Kernel;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 class TaskControllerTest extends WebTestCase
 {
   private KernelBrowser $client;
+  private EntityManagerInterface $em;
 
-  //HTTP client creation
   public function setUp(): void
   {
     $this->client = static::createClient();
+    $this->em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+    $this->urlGenerator = $this->client->getContainer()->get('router.default');
   }
 
-  //display Tasks List Test
-  public function testTasksList()
+  public function testCantRemoveTodolistRemove()
   {
-    $this->client->request('GET','/');
-    $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    $this->client->request('GET', $this->urlGenerator->generate('task_delete', ['id' => 1]));
+    $this->assertResponseRedirects();
+    $crawler = $this->client->followRedirect();
+    $this->assertEquals(0, $crawler->filter('html:contains("La tâche a bien été supprimée.")')->count());
   }
 
-  //display Task creation page
-  public function testTaskCreatePage()
+  public function testValidAnonymousTodolistRemoveWithAdminAccount()
   {
-    $this->client->request('GET','/tasks/create');
-    $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'kiwi@pommemail.com']);
+    $this->client->loginUser($user);
+    $this->client->request('GET', $this->urlGenerator->generate('task_delete', ['id' => 1]));
+    $this->assertResponseRedirects();
+    $crawler = $this->client->followRedirect();
+    $this->assertEquals(1, $crawler->filter('html:contains("La tâche a bien été supprimée.")')->count());
   }
-
 }

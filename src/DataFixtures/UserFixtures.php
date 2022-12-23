@@ -16,19 +16,19 @@ class UserFixtures extends Fixture
             'username' => 'toto',
             'password' => 'toto',
             'email' => 'mirtille@pommemail.com',
-            'roles' => '[ROLE_USER]'
+            'roles' => ['ROLE_USER']
         ],
         [
             'username' => 'alain',
             'password' => 'alain',
             'email' => 'cassis@pommemail.com',
-            'roles' => 'ROLE_USER'
+            'roles' => ['ROLE_USER']
         ],
         [
             'username' => 'aline',
             'password' => 'aline',
             'email' => 'kiwi@pommemail.com',
-            'roles' => 'ROLE_ADMIN'
+            'roles' => ['ROLE_ADMIN']
         ],
     ];
 
@@ -46,6 +46,7 @@ class UserFixtures extends Fixture
             $user->setEmail($userData['email']);
             $password = $this->hasher->hashPassword($user, $userData['password']);
             $user->setPassword($password);
+            $user->setRoles($userData['roles']);
             $this->setReference(self::USER_REFERENCE.$key, $user);
             $manager->persist($user);
             $manager->flush();
