@@ -7,48 +7,37 @@ use PHPUnit\Framework\TestCase;
 
 class TaskTest extends TestCase
 {
-
-  public function testTaskId()
+  public function testTaskCreatedDate()
   {
     $task = new Task();
-    $id = 1;
+    $createdAt = new \DateTime();
+    $task->setCreatedAt($createdAt);
 
-    $task->setId($id);
-    $this->assertIsInt($id, $task->getId());
+    $this->assertEquals($createdAt, $task->getCreatedAt());
   }
 
-  public function testTaskCreatedDate()
-    {
-      $task = new Task();
-      $createdAt = new \DateTime();
-      $task->setCreatedAt($createdAt);
+  public function testTaskTitle()
+  {
+    $task = new Task();
+    $title = " Je suis un titre 1 ";
 
-      $this->assertEquals($createdAt, $task->getCreatedAt());
-    }
+    $task->setTitle($title);
+    $this->assertEquals($title, $task->getTitle());
+  }
 
-    public function testTaskTitle()
-      {
-        $task = new Task();
-        $title = " Je suis un titre 1 ";
+  public function testTaskContent()
+  {
+    $task = new Task();
+    $content = " Je suis un contenu 1 ";
+    $task->setContent($content);
+    $this->assertEquals($content, $task->getContent());
+  }
 
-        $task->setTitle($title);
-        $this->assertEquals($title, $task->getTitle());
-      }
-
-    public function testTaskContent()
-      {
-        $task = new Task();
-        $content = " Je suis un contenu 1 ";
-        $task->setContent($content);
-        $this->assertEquals($content, $task->getContent());
-      }
-
-    public function testTaskIsDone()
-      {
-        $task = new Task();
-        $isDone = false;
-        $task->setIsDone($isDone);
-        $this->assertIsBool($isDone, $task->getIsDone());
-      }
-
+  public function testTaskIsDone()
+  {
+    $task = new Task();
+    $isDone = false;
+    $task->setIsDone($isDone);
+    $this->assertIsBool($isDone, $task->getIsDone());
+  }
 }
