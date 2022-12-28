@@ -8,6 +8,14 @@ body {
     padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
+.mt-1 {
+    margin-top: 10px;
+}
+
+.mb-1 {
+    margin-bottom: 10px;
+}
+
 .slide-image {
     width: 100%;
 }
@@ -23,7 +31,7 @@ body {
 
 .caption {
     height: 130px;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .caption h4 {
