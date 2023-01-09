@@ -40,10 +40,7 @@
                     </div>
                     <div class="clearfix action-task">
                         <div class="col-md-6 mb-1 mt-1">
-                            {% if
-                                (app.user is not null and app.user == task.author) or
-                                (app.user is not null and is_granted('ROLE_ADMIN') and task.author is null)
-                            %}
+                            {% if app.user is not null %}
                                 <form action="{{ path('task_toggle', {'id' : task.id }) }}">
                                     <button class="btn btn-success btn-sm pull-right">
                                         {% if not task.isDone %}
@@ -55,7 +52,6 @@
                                 </form>
                             {% endif %}
                         </div>
-
 
                         {% if
                             (app.user is not null and app.user == task.author) or

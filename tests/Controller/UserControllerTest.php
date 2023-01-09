@@ -33,7 +33,7 @@ class UserControllerTest extends WebTestCase
     $this->assertSelectorTextContains('#logout', 'Se déconnecter');
   }
 
-  public function testListNotAllowAccessPageListUserAction()
+  public function testListNoAccessPageListUserAction()
   {
     $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'mirtille@pommemail.com']);
     $this->client->loginUser($user);
@@ -54,7 +54,7 @@ class UserControllerTest extends WebTestCase
     $this->assertEquals(1, $crawler->filter('html:contains("kiwi@pommemail.com")')->count());
   }
 
-  public function testEditAction()
+  public function testEditUserAction()
   {
     $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'cassis@pommemail.com']);
     $this->client->loginUser($user);

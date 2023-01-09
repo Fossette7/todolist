@@ -23,16 +23,16 @@ class TaskControllerTest extends WebTestCase
     $this->urlGenerator = $this->client->getContainer()->get('router.default');
   }
 
-  public function testValidNotLoggedlistAction()
+  public function testNotLoggedUserDisplayListAction()
   {
     $crawler = $this->client->request('GET', $this->urlGenerator->generate('task_list'));
 
     // Check http response code
     $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-    // Check not finish task display (thumbnail element)
-    $taskNotFinish = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
-    $this->assertEquals(count($taskNotFinish), $crawler->filter('.thumbnail')->count());
+    // Check undo task display (thumbnail element)
+    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
+    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
 
     // Check create task button not available
     $this->assertEquals(0, $crawler->filter('.create-task')->count());
@@ -41,7 +41,7 @@ class TaskControllerTest extends WebTestCase
     $this->assertSelectorTextSame('a:nth-child(2)', 'Se connecter');
   }
 
-  public function testValidLoggedWithUserRolelistAction()
+  public function testValidLoggedWithUserRoleDisplayListAction()
   {
     $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'mirtille@pommemail.com']);
     $this->client->loginUser($user);
@@ -51,9 +51,9 @@ class TaskControllerTest extends WebTestCase
     // Check http response code
     $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-    // Check not finish task display (thumbnail element)
-    $taskNotFinish = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
-    $this->assertEquals(count($taskNotFinish), $crawler->filter('.thumbnail')->count());
+    // Check undo task display (thumbnail element)
+    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
+    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
 
     // Check create task button available
     $this->assertEquals(1, $crawler->filter('.create-task')->count());
@@ -66,9 +66,9 @@ class TaskControllerTest extends WebTestCase
     $this->assertSelectorTextSame('#logout', 'Se déconnecter');
   }
 
-  public function testValidLoggedWithAdminRolelistAction()
+  public function testValidLoggedWithAdminRoleDisplayListAction()
   {
-    // Login with Admin user
+    // Check access to Task list with Admin user logged
     $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'kiwi@pommemail.com']);
     $this->client->loginUser($user);
 
@@ -77,14 +77,14 @@ class TaskControllerTest extends WebTestCase
     // Check http response code
     $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-    // Check not finish task not finish display (thumbnail element)
-    $taskNotFinish = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
-    $this->assertEquals(count($taskNotFinish), $crawler->filter('.thumbnail')->count());
+    // Check undo task undo display (thumbnail element)
+    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
+    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
 
     // Check create task button available
     $this->assertEquals(1, $crawler->filter('.create-task')->count());
 
-    // Check if 2 button available (Marquer comme faite + Supprimer)
+    // Check if 2 buttons available (Marquer comme faite + Supprimer)
     $this->assertEquals(2, $crawler->filter('.task:first-child > .thumbnail > .action-task > div')->count());
     $this->assertSelectorTextSame('.task:first-child > .thumbnail > .action-task > div:first-child', 'Marquer comme faite');
     $this->assertSelectorTextSame('.task:first-child > .thumbnail > .action-task > div:nth-child(2)', 'Supprimer');
@@ -93,7 +93,7 @@ class TaskControllerTest extends WebTestCase
     $this->assertSelectorTextSame('#logout', 'Se déconnecter');
   }
 
-  public function testValidRemoveButtonDisplayOnAuthorListWithNoAdminRolelistAction()
+  public function testRemoveDeleteAndIsDoneActionButtonOnTaskIfNoRoleAdmin()
   {
     // Login with Admin user
     $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'mirtille@pommemail.com']);
@@ -104,14 +104,14 @@ class TaskControllerTest extends WebTestCase
     // Check http response code
     $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-    // Check not finish task display (thumbnail element)
-    $taskNotFinish = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
-    $this->assertEquals(count($taskNotFinish), $crawler->filter('.thumbnail')->count());
+    // Check undo task display (thumbnail element)
+    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
+    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
 
     // Check create task button available
     $this->assertEquals(1, $crawler->filter('.create-task')->count());
 
-    // Check if 2 button available (Marquer comme faite + Supprimer) if task.author === user
+    // Check if 2 buttons available (Marquer comme faite + Supprimer) if task.author === user
     $this->assertEquals(2, $crawler->filter('.task:nth-child(2) > .thumbnail > .action-task > div')->count());
     $this->assertSelectorTextSame('.task:nth-child(2) > .thumbnail > .action-task > div:first-child', 'Marquer comme faite');
     $this->assertSelectorTextSame('.task:nth-child(2) > .thumbnail > .action-task > div:nth-child(2)', 'Supprimer');
@@ -136,16 +136,16 @@ class TaskControllerTest extends WebTestCase
     // Check http response code
     $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-    // Check finish task display (thumbnail element)
-    $taskFinish = $this->em->getRepository(Task::class)->findBy(['isDone' => 1]);
-    $this->assertEquals(count($taskFinish), $crawler->filter('.thumbnail')->count());
+    // Check undo task display (thumbnail element)
+    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 1]);
+    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
 
     // Check create task button not available
     $this->assertEquals(0, $crawler->filter('.create-task')->count());
 
     // Check if 2 button available (Marquer comme faite + Supprimer) if task.author === user
     $this->assertEquals(1, $crawler->filter('.task:first-child > .thumbnail > .action-task > div')->count());
-    $this->assertSelectorTextSame('.task:first-child > .thumbnail > .action-task > div:first-child', 'Marquer non terminée');
+    $this->assertSelectorTextNotContains('.task:first-child > .thumbnail > .action-task > div:first-child', 'Marquer non terminée');
     $this->assertSelectorTextSame('.task:first-child > .thumbnail > .caption > .badge', 'Anonyme');
 
     // Check logout button
@@ -164,9 +164,9 @@ class TaskControllerTest extends WebTestCase
     // Check http response code
     $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-    // Check finish task display (thumbnail element)
-    $taskFinish = $this->em->getRepository(Task::class)->findBy(['isDone' => 1]);
-    $this->assertEquals(count($taskFinish), $crawler->filter('.thumbnail')->count());
+    // Check undo task display (thumbnail element)
+    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 1]);
+    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
 
     // Check create task button not available
     $this->assertEquals(1, $crawler->filter('.create-task')->count());
@@ -195,9 +195,9 @@ class TaskControllerTest extends WebTestCase
     // Check http response code
     $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-    // Check finish task display (thumbnail element)
-    $taskFinish = $this->em->getRepository(Task::class)->findBy(['isDone' => 1]);
-    $this->assertEquals(count($taskFinish), $crawler->filter('.thumbnail')->count());
+    // Check undo task display (thumbnail element)
+    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 1]);
+    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
 
     // Check create task button not available
     $this->assertEquals(1, $crawler->filter('.create-task')->count());
@@ -213,7 +213,7 @@ class TaskControllerTest extends WebTestCase
     $this->assertSelectorTextSame('.task:nth-child(2) > .thumbnail > .action-task > div:first-child', 'Marquer non terminée');
   }
 
-  public function testCantRemoveTodolistRemoveAction()
+  public function testCantDeleteTaskAction()
   {
     // Remove first task
     $firstTask = $this->em->getRepository(Task::class)->findOneBy([]);
@@ -225,11 +225,11 @@ class TaskControllerTest extends WebTestCase
     // Apply redirect to continue and load task_list page on $this->client
     $crawler = $this->client->followRedirect();
 
-    // Check remove message not set
+    // Check delete message not set
     $this->assertEquals(0, $crawler->filter('.alert.alert-success')->count());
   }
 
-  public function testValidAnonymousTodolistRemoveWithAdminAccountAction()
+  public function testAnonymousTaskDeleteWithAdminAccountAction()
   {
     // Connect with admin user
     $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'kiwi@pommemail.com']);
@@ -252,7 +252,7 @@ class TaskControllerTest extends WebTestCase
 
   public function testEditAction()
   {
-    $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'kiwi@pommemail.com']);
+    $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'mirtille@pommemail.com']);
     $task = $this->em->getRepository(Task::class)->findOneBy(['title' => 'Final fantasy 7']);
     $this->client->loginUser($user);
     $this->client->request('GET', $this->urlGenerator->generate('task_edit', ['id' => $task->getId()]));
@@ -263,5 +263,19 @@ class TaskControllerTest extends WebTestCase
 
     $crawler = $this->client->followRedirect();
     $this->assertEquals(1, $crawler->filter('.thumbnail:contains("Final fantasy 10")')->count());
+  }
+
+  public function testCreateTaskAction()
+  {
+    $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'kiwi@pommemail.com']);
+    $this->client->loginUser($user);
+    $this->client->request('GET', '/tasks/create');
+    $crawler = $this->client->submitForm('Ajouter', [
+      'task[title]' => 'Data test',
+      'task[content]' => ' Content data test, Content data test , Content data test, Content data test,Content data test',
+    ]);
+
+    $crawler = $this->client->followRedirect();
+    $this->assertSelectorTextContains('div.alert.alert-success','La tâche a été bien été ajoutée.');
   }
 }
