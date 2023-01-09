@@ -26,7 +26,7 @@ class TaskController extends AbstractController
    */
   public function listTaskDoneAction(EntityManagerInterface $em)
   {
-    $taskDone = $em->getRepository(Task::class)->findBy(['isDone'=> 1]);
+    $taskDone = $em->getRepository(Task::class)->findBy(['isDone' => 1]);
 
     return $this->render('task/list.html.twig', ['tasks' => $taskDone]);
   }
@@ -59,11 +59,15 @@ class TaskController extends AbstractController
   /**
    * @Route("/tasks/{id}/edit", name="task_edit")
    */
-  public function editAction(Task $task, Request $request, EntityManagerInterface $em, \Symfony\Component\Security\Core\Security $security)
-  {
+  public function editAction(
+    Task $task,
+    Request $request,
+    EntityManagerInterface $em,
+    \Symfony\Component\Security\Core\Security $security
+  ) {
     if (
       ($this->getUser() && $this->getUser() === $task->getAuthor()) ||
-      $security->isGranted('ROLE_ADMIN')
+      ($task->getAuthor() === null && $security->isGranted('ROLE_ADMIN'))
     ) {
       $form = $this->createForm(TaskType::class, $task);
 
@@ -88,12 +92,20 @@ class TaskController extends AbstractController
   /**
    * @Route("/tasks/{id}/toggle", name="task_toggle")
    */
-  public function toggleTaskAction(Task $task, EntityManagerInterface $em)
-  {
-    $task->toggle(!$task->isDone());
-    $em->flush();
+  public function toggleTaskAction(
+    Task $task,
+    EntityManagerInterface $em,
+    \Symfony\Component\Security\Core\Security $security
+  ) {
+    if (
+      ($this->getUser() && $this->getUser() === $task->getAuthor()) ||
+      ($task->getAuthor() === null && $security->isGranted('ROLE_ADMIN'))
+    ) {
+      $task->toggle(!$task->isDone());
+      $em->flush();
 
-    $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+      $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+    }
 
     return $this->redirectToRoute('task_list');
   }
@@ -104,13 +116,15 @@ class TaskController extends AbstractController
    * @param Security $security
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
    */
-  public function deleteTaskAction(Task $task, EntityManagerInterface $em, \Symfony\Component\Security\Core\Security $security) :RedirectResponse
-  {
+  public function deleteTaskAction(
+    Task $task,
+    EntityManagerInterface $em,
+    \Symfony\Component\Security\Core\Security $security
+  ): RedirectResponse {
     if (
       ($this->getUser() && $this->getUser() === $task->getAuthor()) ||
       ($task->getAuthor() === null && $security->isGranted('ROLE_ADMIN'))
-    )
-    {
+    ) {
       $em->remove($task);
       $em->flush();
       $this->addFlash('success', 'La tâche a bien été supprimée.');

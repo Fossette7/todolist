@@ -60,3 +60,11 @@ body {
 footer {
     margin: 50px 0;
 }
+
+.task {
+    height: 200px !important;
+}
+
+.task > .thumbnail {
+    min-height: 180px !important;
+}
