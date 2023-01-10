@@ -39,6 +39,9 @@
 <div class="container">
     <div class="row" id="login-container">
         <div class="col-md-12 mb-1">
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('user_list') }}" class="btn btn-primary">Liste des utilisateurs</a>
+            {% endif %}
             {% if not app.user %}
                 <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
             {% endif %}
