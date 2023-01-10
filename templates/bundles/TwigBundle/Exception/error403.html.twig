@@ -1,0 +1,10 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>No access page</h1>
+
+    <p>
+        Page non autorisée <a href="{{ path('homepage') }}">retour à l'accueil</a>.
+    </p>
+{% endblock %}

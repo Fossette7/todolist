@@ -250,7 +250,7 @@ class TaskControllerTest extends WebTestCase
     $this->assertSelectorTextSame('.alert.alert-success', 'Superbe ! La tâche a bien été supprimée.');
   }
 
-  public function testEditAction()
+  public function testEditTaskAction()
   {
     $user = $this->em->getRepository(User::class)->findOneBy(['email' => 'mirtille@pommemail.com']);
     $task = $this->em->getRepository(Task::class)->findOneBy(['title' => 'Final fantasy 7']);
