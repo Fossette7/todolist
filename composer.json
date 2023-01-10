@@ -92,7 +92,7 @@
         "run-test": [
             "php bin/phpunit"
         ],
-        "run-test-witch-clean-bdd": [
+        "run-test-with-clean-bdd": [
             "@init-bdd-test",
             "@run-test"
         ]

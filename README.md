@@ -42,7 +42,8 @@ inside your directory:  `cd my-project`
 ### TEST - PHP Unit Test
 **Load the test fixture** with :  `php bin/console doctrine:fixtures:load --env=test`
 
-**Run tests** with: `vendor/bin/phpunit` or `composer run-test`
+**Run tests** with: `vendor/bin/phpunit` or `composer composer run-test-with-clean-bdd` <br>
+**Built coverage** : `composer init-bdd-test && vendor/bin/phpunit --coverage-html public/test-coverage`
 
 <hr>
 
