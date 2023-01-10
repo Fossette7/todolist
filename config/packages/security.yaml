@@ -25,6 +25,8 @@ security:
                 # "app_login" is the name of the route created previously
                 login_path: login
                 check_path: login
+                default_target_path: homepage
+                always_use_default_target_path: true
             logout:
                 path: logout
 
@@ -37,8 +39,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/users/create, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/tasks, roles: ROLE_USER }
+        - { path: ^/users, roles: ROLE_USER }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 when@test:
     security:

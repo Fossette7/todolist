@@ -34,7 +34,7 @@ class DefaultControllerTest extends WebTestCase
     $this->assertSelectorTextSame('h1', 'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !');
 
     // Check number link on homepage
-    $this->assertEquals(5, $crawler->filter('a')->count());
+    $this->assertEquals(3, $crawler->filter('a')->count());
 
     // Check login link if not logged
     $this->assertSelectorTextSame('a:nth-child(2)', 'Se connecter');
@@ -42,10 +42,7 @@ class DefaultControllerTest extends WebTestCase
     $this->assertSelectorNotExists('#logout');
 
     // Check if button créer une nouvelle tâche not here
-    $this->assertSelectorTextNotContains('#task-action-container > a:nth-child(1)', 'Créer une nouvelle tâche');
-
-    // Check if first button equals to Consulter la liste des tâches à faire
-    $this->assertSelectorTextSame('#task-action-container > a:nth-child(1)', 'Consulter la liste des tâches à faire');
+    $this->assertEquals(0, $crawler->filter('#task-action-container > a')->count());
   }
 
   public function testValidLoggedDefaultIndex()

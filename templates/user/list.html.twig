@@ -7,7 +7,8 @@
 {% block body %}
     {% if users|length == 0 %}
         <div class="alert alert-warning" role="alert">
-            Il n'y a pas encore d'utilisateur enregistré. <a href="{{ path('user_create') }}" class="btn btn-warning pull-right">Créer un utilisateur</a>
+            Il n'y a pas encore d'utilisateur enregistré. <a href="{{ path('user_create') }}"
+                                                             class="btn btn-warning pull-right">Créer un utilisateur</a>
         </div>
     {% else %}
         <div class="row">
@@ -27,7 +28,10 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>
-                            <a href="{{ path('user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm">Edit</a>
+                            {% if app.user.id == user.id %}
+                                <a href="{{ path('user_edit', {'id' : user.id}) }}"
+                                   class="btn btn-success btn-sm">Edit</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

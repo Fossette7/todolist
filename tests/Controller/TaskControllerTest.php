@@ -23,22 +23,12 @@ class TaskControllerTest extends WebTestCase
     $this->urlGenerator = $this->client->getContainer()->get('router.default');
   }
 
-  public function testNotLoggedUserDisplayListAction()
+  public function testNotLoggedUserCanNotDisplayListAction()
   {
     $crawler = $this->client->request('GET', $this->urlGenerator->generate('task_list'));
 
     // Check http response code
-    $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-
-    // Check undo task display (thumbnail element)
-    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 0]);
-    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
-
-    // Check create task button not available
-    $this->assertEquals(0, $crawler->filter('.create-task')->count());
-
-    // Check login link if not logged
-    $this->assertSelectorTextSame('a:nth-child(2)', 'Se connecter');
+    $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
   }
 
   public function testValidLoggedWithUserRoleDisplayListAction()
@@ -128,28 +118,13 @@ class TaskControllerTest extends WebTestCase
   }
 
 
-  public function testAccessWithAnonymousUserListTaskDoneAction()
+  public function testCanNotAccessWithAnonymousUserListTaskDoneAction()
   {
     // Login with Admin user
     $crawler = $this->client->request('GET', $this->urlGenerator->generate('task_list_done'));
 
     // Check http response code
-    $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-
-    // Check undo task display (thumbnail element)
-    $taskUndo = $this->em->getRepository(Task::class)->findBy(['isDone' => 1]);
-    $this->assertEquals(count($taskUndo), $crawler->filter('.thumbnail')->count());
-
-    // Check create task button not available
-    $this->assertEquals(0, $crawler->filter('.create-task')->count());
-
-    // Check if 2 button available (Marquer comme faite + Supprimer) if task.author === user
-    $this->assertEquals(1, $crawler->filter('.task:first-child > .thumbnail > .action-task > div')->count());
-    $this->assertSelectorTextNotContains('.task:first-child > .thumbnail > .action-task > div:first-child', 'Marquer non terminée');
-    $this->assertSelectorTextSame('.task:first-child > .thumbnail > .caption > .badge', 'Anonyme');
-
-    // Check logout button
-    $this->assertSelectorTextSame('a:nth-child(2)', 'Se connecter');
+    $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
   }
 
   public function testAccessWithUserAuthorListTaskDoneAction()
@@ -213,20 +188,14 @@ class TaskControllerTest extends WebTestCase
     $this->assertSelectorTextSame('.task:nth-child(2) > .thumbnail > .action-task > div:first-child', 'Marquer non terminée');
   }
 
-  public function testCantDeleteTaskAction()
+  public function testCantAccessOnDeleteTaskAction()
   {
     // Remove first task
     $firstTask = $this->em->getRepository(Task::class)->findOneBy([]);
     $this->client->request('GET', $this->urlGenerator->generate('task_delete', ['id' => $firstTask->getId()]));
 
-    // Check if redirect on task list page
-    $this->assertResponseRedirects($this->urlGenerator->generate('task_list'));
-
-    // Apply redirect to continue and load task_list page on $this->client
-    $crawler = $this->client->followRedirect();
-
-    // Check delete message not set
-    $this->assertEquals(0, $crawler->filter('.alert.alert-success')->count());
+    // Check http response code
+    $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
   }
 
   public function testAnonymousTaskDeleteWithAdminAccountAction()
